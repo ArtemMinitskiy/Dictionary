@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "165976339316",
+    "firebase_url": "https://dictionaryprojects-9b5d2-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "dictionaryprojects-9b5d2",
+    "storage_bucket": "dictionaryprojects-9b5d2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:165976339316:android:526f2929805ea89194b221",
+        "android_client_info": {
+          "package_name": "com.project.dictionary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "165976339316-uqfe42mra6tndagh8455c5h9uh0im92t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJ9K3g-DhbYoeOmG0VnomMtLD8HKLps0E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "165976339316-uqfe42mra6tndagh8455c5h9uh0im92t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
