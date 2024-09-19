@@ -21,7 +21,7 @@ class RealtimeDatabaseRepositoryImpl @Inject constructor(
     private val firebaseDatabase = Firebase.database
 
     @ExperimentalCoroutinesApi
-    override fun fetchNotifications() = callbackFlow<Result<List<Word>>> {
+    override fun fetchWords() = callbackFlow<Result<List<Word>>> {
         val postListener = object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
                 this@callbackFlow.trySendBlocking(Result.failure(error.toException()))
@@ -35,7 +35,7 @@ class RealtimeDatabaseRepositoryImpl @Inject constructor(
                     postSnapshot.children.forEach {
                         if (it.child(WORD_NAME).value != "") {
                             listOfWords.add(Word(it.key.toString(), it.child(WORD_NAME).value.toString(), it.child(WORD_DEFINITION).value.toString()))
-                            Log.e("mLogFirebase", "Key ${it.key} WordName ${it.child(WORD_NAME).value} - ${it.child(WORD_DEFINITION).value}")
+//                            Log.e("mLogFirebase", "Key ${it.key} WordName ${it.child(WORD_NAME).value} - ${it.child(WORD_DEFINITION).value}")
                         }
                     }
                 }

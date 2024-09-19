@@ -4,5 +4,5 @@ import com.project.dictionary.model.Word
 import kotlinx.coroutines.flow.Flow
 
 interface RealtimeDatabaseRepository {
-    fun fetchNotifications() : Flow<Result<List<Word>>>
+    fun fetchWords() : Flow<Result<List<Word>>>
 }

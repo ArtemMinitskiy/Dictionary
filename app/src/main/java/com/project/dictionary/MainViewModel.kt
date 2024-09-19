@@ -11,7 +11,5 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val _realtimeDatabaseRepository: RealtimeDatabaseRepository
 ) : ViewModel() {
-
-    fun getListOfWords() = _realtimeDatabaseRepository.fetchNotifications()
-
+    fun getListOfWords() = _realtimeDatabaseRepository.fetchWords()
 }
