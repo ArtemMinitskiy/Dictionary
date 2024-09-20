@@ -3,12 +3,12 @@ package com.project.dictionary
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,27 +30,36 @@ import com.project.dictionary.ui.theme.color2
 import com.project.dictionary.ui.theme.color3
 import com.project.dictionary.ui.theme.color4
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun WordsScreen(
-    viewModel: MainViewModel
+    viewModel: MainViewModel,
+    scrollIndex: MutableState<Int>,
+    onClick: (Word, Int) -> Unit
 ) {
     val listOfWords = remember { mutableStateOf<ArrayList<Word>>(arrayListOf()) }
     val isLoading = remember { mutableStateOf(false) }
     val composition = rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.lf20_v90rvaig))
     val coroutine = rememberCoroutineScope()
+    val scrollState = rememberLazyListState()
 
     if (isLoading.value) {
-        LazyColumn(modifier = Modifier.fillMaxSize().padding(top = 34.dp)) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 34.dp),
+            state = scrollState
+        ) {
             itemsIndexed(items = listOfWords.value, itemContent = { index, item ->
                 when (index % 4) {
-                    0 -> WordItem(item.wordName, color1)
-                    1 -> WordItem(item.wordName, color2)
-                    2 -> WordItem(item.wordName, color3)
-                    else -> WordItem(item.wordName, color4)
+                    0 -> WordItem(item.wordName, color1) { onClick(item, index) }
+                    1 -> WordItem(item.wordName, color2) { onClick(item, index) }
+                    2 -> WordItem(item.wordName, color3) { onClick(item, index) }
+                    else -> WordItem(item.wordName, color4) { onClick(item, index) }
                 }
             })
         }
@@ -82,8 +91,10 @@ fun WordsScreen(
                         coroutine.launch {
                             listOfWords.value = it.getOrNull() as ArrayList<Word>
                             listOfWords.value.sortBy { it.wordName }
+//                            delay(1000)
                         }.invokeOnCompletion {
                             isLoading.value = true
+                            Log.i("mLogFirebase", "Success")
                         }
                     }
                 }
@@ -95,5 +106,9 @@ fun WordsScreen(
                 }
             }
         }
+    }
+
+    LaunchedEffect(scrollIndex.value) {
+        if(isLoading.value) scrollState.animateScrollToItem(scrollIndex.value)
     }
 }

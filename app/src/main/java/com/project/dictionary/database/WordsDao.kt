@@ -13,9 +13,9 @@ interface WordsDao {
     suspend fun getAllWords(): List<Word>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertWord(dog: Word)
+    suspend fun insertWord(word: Word)
 
     @Delete
-    suspend fun deleteWord(dog: Word)
+    suspend fun deleteWord(word: Word)
 
 }

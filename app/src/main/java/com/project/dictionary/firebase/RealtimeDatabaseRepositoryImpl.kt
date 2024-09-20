@@ -3,6 +3,7 @@ package com.project.dictionary.firebase
 import android.util.Log
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -19,6 +20,7 @@ import javax.inject.Inject
 class RealtimeDatabaseRepositoryImpl @Inject constructor(
 ) : RealtimeDatabaseRepository {
     private val firebaseDatabase = Firebase.database
+//    private var firebase = FirebaseDatabase.getInstance()
 
     @ExperimentalCoroutinesApi
     override fun fetchWords() = callbackFlow<Result<List<Word>>> {
@@ -43,6 +45,8 @@ class RealtimeDatabaseRepositoryImpl @Inject constructor(
             }
         }
         firebaseDatabase.getReference(DICTIONARY_TABLE).orderByKey().addValueEventListener(postListener)
+
+//        firebase.setPersistenceEnabled(true)
 
         awaitClose {
             firebaseDatabase.getReference(DICTIONARY_TABLE).removeEventListener(postListener)

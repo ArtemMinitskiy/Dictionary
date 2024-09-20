@@ -13,6 +13,7 @@ converter_scalars_version = "2.9.0"
 logging_interceptor_version = "4.12.0"
 coil_version = "2.4.0"
 lottieCompose_version = "5.2.0"
+navigation = "2.7.7"
 google-services = "4.4.2"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -54,6 +55,7 @@ retrofit-scalars-android = { group = "com.squareup.retrofit2", name = "converter
 okhttp3-logging-interceptor-android = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "logging_interceptor_version" }
 coil-compose-android = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil_version" }
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose_version" }
+navigation-android = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

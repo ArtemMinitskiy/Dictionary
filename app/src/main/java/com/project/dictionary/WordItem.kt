@@ -1,6 +1,5 @@
 package com.project.dictionary
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -19,17 +18,16 @@ import androidx.compose.ui.unit.sp
 import com.project.dictionary.ui.theme.White
 
 @Composable
-fun WordItem(word: String, color: Color) {
+fun WordItem(word: String, color: Color, onClick: () -> Unit) {
     Box(modifier = Modifier
         .fillMaxWidth()
         .height(60.dp)
         .padding(8.dp)
         .background(color, RoundedCornerShape(4.dp))
         .clickable {
-            Log.i("mLogFirebase", "$word")
+            onClick()
         })
     {
         Text(modifier = Modifier.align(Alignment.Center), text = word, style = TextStyle(fontSize = 14.sp), color = White)
     }
-//    Spacer(modifier = Modifier.height(10.dp))
 }
