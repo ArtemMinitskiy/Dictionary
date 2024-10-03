@@ -8,16 +8,23 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.util.Log
+import android.widget.RemoteViews
+import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.project.dictionary.Constants.NOTIFICATION_WORD
 import com.project.dictionary.firebase.RealtimeDatabaseRepositoryImpl
 import com.project.dictionary.model.Word
+import com.project.dictionary.ui.theme.color1
+import com.project.dictionary.ui.theme.color2
+import com.project.dictionary.ui.theme.color3
+import com.project.dictionary.ui.theme.color4
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -30,12 +37,14 @@ object NotificationHandler {
         Log.e("mLogFirebase", "CoroutineExceptionHandler ${throwable.message}")
     }
     private val scope = CoroutineScope(Dispatchers.IO + coroutineExceptionHandler)
-    private var word = Word("", "", "")
+    private var word = Word()
+
+    private var remoteViews: RemoteViews? = null
+    private var listRandomIndex = 0
 
     @OptIn(ExperimentalCoroutinesApi::class)
     fun createReminderNotification(context: Context) {
-//        Log.i("mLogFirebase", "createReminderNotification")
-
+        Log.i("mLogFirebase", "createReminderNotification")
         scope.launch {
             databaseRepositoryImpl.fetchWords().collectLatest {
                 when {
@@ -43,12 +52,23 @@ object NotificationHandler {
                         scope.launch {
                             it.let { result ->
                                 result.getOrNull()?.let { list ->
-                                    word = list[Random.nextInt(0, list.size - 1)]
+                                    listRandomIndex = Random.nextInt(0, list.size - 1)
+                                    word = list[listRandomIndex]
                                     Log.e("mLogFirebase", "WORD: $word")
                                 }
                             }
                         }.invokeOnCompletion {
                             Log.i("mLogFirebase", "Send Notification")
+                            remoteViews = RemoteViews(context.packageName, R.layout.notification_badge)
+
+                            remoteViews?.setTextViewText(R.id.notificationText, word.wordName)
+
+                            remoteViews?.setInt(R.id.root, "setBackgroundColor", when (listRandomIndex % 4) {
+                                0 -> color1.toArgb()
+                                1 -> color2.toArgb()
+                                2 -> color3.toArgb()
+                                else -> color4.toArgb()
+                            })
 
                             //No back-stack when launched
                             val intent = Intent(context, MainActivity::class.java).apply {
@@ -58,18 +78,20 @@ object NotificationHandler {
                                         Intent.FLAG_ACTIVITY_NO_ANIMATION or Intent.FLAG_ACTIVITY_NO_HISTORY
                             }
 
-                            val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                            val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
                             createNotificationChannel(context) //This won't create a new channel everytime, safe to call
 
                             val builder = NotificationCompat.Builder(context, CHANNEL_ID)
                                 .setSmallIcon(R.mipmap.ic_launcher_round)
-                                .setContentTitle(word.wordName)
-                                .setContentText(if (word.wordDescription.length >= 30) word.wordDescription.substring(0, 29).replaceFirstChar { it.titlecase() } + "..." else "...")
+//                                .setContentTitle(word.wordName)
+//                                .setContentText(if (word.wordDescription.length >= 30) word.wordDescription.substring(0, 29).replaceFirstChar { it.titlecase() } + "..." else "...")
                                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                                 .setAutoCancel(true) //Remove notification when tapped
                                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC) //Show on lock screen
-                                .setContentIntent(pendingIntent) //For launching the MainActivity
+//                                .setContentIntent(pendingIntent) //For launching the MainActivity
+                                .setContentIntent(pendingIntent)
+                                .setContent(remoteViews) //For launching the MainActivity
 
                             with(NotificationManagerCompat.from(context)) {
                                 if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
@@ -77,10 +99,13 @@ object NotificationHandler {
                                 }
                                 notify(1, builder.build())
                             }
+
+                            scope.cancel()
                         }
                     }
 
                     it.isFailure -> {
+                        scope.cancel()
                         Log.e("mLogFirebase", "Failure ${it.exceptionOrNull()?.printStackTrace()}")
                     }
                 }

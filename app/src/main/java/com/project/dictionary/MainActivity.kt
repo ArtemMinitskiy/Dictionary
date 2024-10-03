@@ -2,7 +2,6 @@ package com.project.dictionary
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -23,6 +22,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.project.dictionary.Constants.NOTIFICATION_WORD
 import com.project.dictionary.model.Word
+import com.project.dictionary.ui.screens.DefinitionScreen
+import com.project.dictionary.ui.screens.WordsScreen
 import com.project.dictionary.ui.theme.DictionaryTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -35,7 +36,6 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i("mLogFirebase", "hasExtra ${intent.hasExtra(NOTIFICATION_WORD)}")
 
         if (intent.hasExtra(NOTIFICATION_WORD)) {
             tempIntentWord = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val viewModel: MainViewModel = hiltViewModel()
-            val word = remember { mutableStateOf(Word("", "", "")) }
+            val word = remember { mutableStateOf(Word()) }
             val scrollIndex = remember { mutableIntStateOf(0) }
             val navController = rememberNavController()
 
@@ -82,9 +82,9 @@ class MainActivity : ComponentActivity() {
                             navController.navigate(NavigationItem.Definition.route)
                         }
                     }
-                    composable(NavigationItem.Definition.route) { backStackEntry ->
+                    composable(NavigationItem.Definition.route) {
                         DefinitionScreen(word) {
-                            navController.popBackStack()
+                            if (intent.hasExtra(NOTIFICATION_WORD)) navController.navigate(NavigationItem.List.route) else navController.popBackStack()
                         }
                     }
                 }

@@ -1,4 +1,4 @@
-package com.project.dictionary
+package com.project.dictionary.ui.screens
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
@@ -20,7 +20,7 @@ fun DefinitionScreen(word: MutableState<Word>, onBack: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 40.dp, start = 8.dp, end = 8.dp)
+            .padding(top = 60.dp, start = 16.dp, end = 8.dp)
     ) {
         Text(
             modifier = Modifier.align(Alignment.TopStart),

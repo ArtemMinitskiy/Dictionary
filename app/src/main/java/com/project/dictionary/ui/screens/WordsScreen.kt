@@ -1,4 +1,4 @@
-package com.project.dictionary
+package com.project.dictionary.ui.screens
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,13 +23,15 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.project.dictionary.MainViewModel
+import com.project.dictionary.R
+import com.project.dictionary.ui.views.WordItem
 import com.project.dictionary.model.Word
 import com.project.dictionary.ui.theme.color1
 import com.project.dictionary.ui.theme.color2
 import com.project.dictionary.ui.theme.color3
 import com.project.dictionary.ui.theme.color4
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -94,7 +95,7 @@ fun WordsScreen(
 //                            delay(1000)
                         }.invokeOnCompletion {
                             isLoading.value = true
-//                            Log.i("mLogFirebase", "Success")
+                            Log.i("mLogFirebase", "Success")
                         }
                     }
                 }

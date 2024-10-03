@@ -1,4 +1,4 @@
-package com.project.dictionary
+package com.project.dictionary.ui.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
