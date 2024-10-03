@@ -1,5 +1,6 @@
 package com.project.dictionary
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import com.project.dictionary.firebase.RealtimeDatabaseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -9,7 +10,14 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val _realtimeDatabaseRepository: RealtimeDatabaseRepository
+    private val realtimeDatabaseRepository: RealtimeDatabaseRepository,
+    private val application: Application
 ) : ViewModel() {
-    fun getListOfWords() = _realtimeDatabaseRepository.fetchWords()
+    fun getListOfWords() = realtimeDatabaseRepository.fetchWords()
+
+    private val app = application
+
+    fun scheduleReminderNotification() {
+        ReminderNotificationWorker.schedule(app)
+    }
 }

@@ -94,14 +94,13 @@ fun WordsScreen(
 //                            delay(1000)
                         }.invokeOnCompletion {
                             isLoading.value = true
-                            Log.i("mLogFirebase", "Success")
+//                            Log.i("mLogFirebase", "Success")
                         }
                     }
                 }
 
                 it.isFailure -> {
-                    Log.e("mLogFirebase", "Failure")
-                    it.exceptionOrNull()?.printStackTrace()
+                    Log.e("mLogFirebase", "Failure ${it.exceptionOrNull()?.printStackTrace()}")
                     isLoading.value = false
                 }
             }

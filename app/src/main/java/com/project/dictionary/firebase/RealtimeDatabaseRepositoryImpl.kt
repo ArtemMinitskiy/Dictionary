@@ -1,15 +1,13 @@
 package com.project.dictionary.firebase
 
-import android.util.Log
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.project.dictionary.Constats.DICTIONARY_TABLE
-import com.project.dictionary.Constats.WORD_DEFINITION
-import com.project.dictionary.Constats.WORD_NAME
+import com.project.dictionary.Constants.DICTIONARY_TABLE
+import com.project.dictionary.Constants.WORD_DEFINITION
+import com.project.dictionary.Constants.WORD_NAME
 import com.project.dictionary.model.Word
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
