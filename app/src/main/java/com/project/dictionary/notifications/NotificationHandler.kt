@@ -1,4 +1,4 @@
-package com.project.dictionary
+package com.project.dictionary.notifications
 
 import android.Manifest
 import android.app.NotificationChannel
@@ -13,7 +13,9 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.project.dictionary.Constants.NOTIFICATION_WORD
+import com.project.dictionary.utils.Constants.NOTIFICATION_WORD
+import com.project.dictionary.MainActivity
+import com.project.dictionary.R
 import com.project.dictionary.firebase.RealtimeDatabaseRepositoryImpl
 import com.project.dictionary.model.Word
 import com.project.dictionary.ui.theme.color1
@@ -25,6 +27,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -49,6 +52,7 @@ object NotificationHandler {
             databaseRepositoryImpl.fetchWords().collectLatest {
                 when {
                     it.isSuccess -> {
+
                         scope.launch {
                             it.let { result ->
                                 result.getOrNull()?.let { list ->
@@ -59,7 +63,7 @@ object NotificationHandler {
                             }
                         }.invokeOnCompletion {
                             Log.i("mLogFirebase", "Send Notification")
-                            remoteViews = RemoteViews(context.packageName, R.layout.notification_badge)
+                            remoteViews = RemoteViews(context.packageName, R.layout.custom_notification_layout)
 
                             remoteViews?.setTextViewText(R.id.notificationText, word.wordName)
 
@@ -78,18 +82,15 @@ object NotificationHandler {
                                         Intent.FLAG_ACTIVITY_NO_ANIMATION or Intent.FLAG_ACTIVITY_NO_HISTORY
                             }
 
-                            val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+                            val pendingIntent = PendingIntent.getActivity(context, listRandomIndex, intent, PendingIntent.FLAG_IMMUTABLE)
 
                             createNotificationChannel(context) //This won't create a new channel everytime, safe to call
 
                             val builder = NotificationCompat.Builder(context, CHANNEL_ID)
                                 .setSmallIcon(R.mipmap.ic_launcher_round)
-//                                .setContentTitle(word.wordName)
-//                                .setContentText(if (word.wordDescription.length >= 30) word.wordDescription.substring(0, 29).replaceFirstChar { it.titlecase() } + "..." else "...")
                                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                                 .setAutoCancel(true) //Remove notification when tapped
                                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC) //Show on lock screen
-//                                .setContentIntent(pendingIntent) //For launching the MainActivity
                                 .setContentIntent(pendingIntent)
                                 .setContent(remoteViews) //For launching the MainActivity
 
@@ -99,8 +100,6 @@ object NotificationHandler {
                                 }
                                 notify(1, builder.build())
                             }
-
-                            scope.cancel()
                         }
                     }
 

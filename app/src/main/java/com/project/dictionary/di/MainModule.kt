@@ -1,4 +1,4 @@
-package com.project.dictionary
+package com.project.dictionary.di
 
 import android.content.Context
 import androidx.room.Room

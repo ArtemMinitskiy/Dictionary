@@ -1,4 +1,4 @@
-package com.project.dictionary
+package com.project.dictionary.utils
 
 enum class Screen {
     LIST,

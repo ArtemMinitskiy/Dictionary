@@ -95,7 +95,7 @@ fun WordsScreen(
 //                            delay(1000)
                         }.invokeOnCompletion {
                             isLoading.value = true
-                            Log.i("mLogFirebase", "Success")
+//                            Log.i("mLogFirebase", "Success")
                         }
                     }
                 }

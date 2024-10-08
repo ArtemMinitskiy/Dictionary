@@ -2,6 +2,7 @@ package com.project.dictionary
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -20,13 +21,18 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.project.dictionary.Constants.NOTIFICATION_WORD
 import com.project.dictionary.model.Word
+import com.project.dictionary.notifications.AlarmItem
+import com.project.dictionary.notifications.AlarmScheduler
+import com.project.dictionary.notifications.AlarmSchedulerImpl
+import com.project.dictionary.notifications.NavigationItem
 import com.project.dictionary.ui.screens.DefinitionScreen
 import com.project.dictionary.ui.screens.WordsScreen
 import com.project.dictionary.ui.theme.DictionaryTheme
+import com.project.dictionary.utils.Constants.NOTIFICATION_WORD
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import java.time.LocalDateTime
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -36,6 +42,9 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val alarmScheduler: AlarmScheduler = AlarmSchedulerImpl(this)
+        var alarmItem: AlarmItem? = null
 
         if (intent.hasExtra(NOTIFICATION_WORD)) {
             tempIntentWord = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -60,7 +69,14 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 LaunchedEffect(Unit) {
-                    viewModel.scheduleReminderNotification()
+                    alarmItem = AlarmItem(
+                        alarmTime = LocalDateTime.now().plusSeconds(5),
+                        message = "Random message"
+                    )
+                    alarmItem?.let(alarmScheduler::schedule)
+
+                    //Not working on Xiaomi
+//                    viewModel.scheduleReminderNotification()
                 }
 
                 Image(modifier = Modifier.fillMaxSize(), contentScale = ContentScale.FillBounds, painter = painterResource(id = R.drawable.background), contentDescription = "")
@@ -78,13 +94,15 @@ class MainActivity : ComponentActivity() {
                         WordsScreen(viewModel, scrollIndex) { item, index ->
                             word.value = item
                             scrollIndex.intValue = index
-//                            Log.i("mLogFirebase", "$index ${item.wordName}")
                             navController.navigate(NavigationItem.Definition.route)
                         }
                     }
                     composable(NavigationItem.Definition.route) {
                         DefinitionScreen(word) {
                             if (intent.hasExtra(NOTIFICATION_WORD)) navController.navigate(NavigationItem.List.route) else navController.popBackStack()
+                            intent.removeExtra(NOTIFICATION_WORD)
+                            word.value = Word()
+                            tempIntentWord = null
                         }
                     }
                 }

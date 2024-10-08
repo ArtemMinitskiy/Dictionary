@@ -1,4 +1,6 @@
-package com.project.dictionary
+package com.project.dictionary.notifications
+
+import com.project.dictionary.utils.Screen
 
 sealed class NavigationItem(val route: String, val name: String = "") {
     data object List : NavigationItem(Screen.LIST.name)

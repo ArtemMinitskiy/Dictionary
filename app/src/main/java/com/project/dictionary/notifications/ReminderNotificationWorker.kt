@@ -1,4 +1,4 @@
-package com.project.dictionary
+package com.project.dictionary.notifications
 
 import android.content.Context
 import android.util.Log
@@ -15,13 +15,13 @@ class ReminderNotificationWorker(
 
     override fun doWork(): Result {
         Log.i("mLogFirebase", "doWork")
-        NotificationHandler.createReminderNotification(appContext)
+//        NotificationHandler.createReminderNotification(appContext)
         return Result.success()
     }
 
     companion object {
         fun schedule(appContext: Context) {
-            Log.i("mLogFirebase", "schedule")
+//            Log.i("mLogFirebase", "schedule")
             val notificationRequest = PeriodicWorkRequestBuilder<ReminderNotificationWorker>(
                 30, TimeUnit.HOURS,
                 15, TimeUnit.MINUTES
