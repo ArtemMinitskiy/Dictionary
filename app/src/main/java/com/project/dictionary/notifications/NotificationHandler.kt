@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.project.dictionary.utils.Constants.NOTIFICATION_WORD
 import com.project.dictionary.MainActivity
 import com.project.dictionary.R
 import com.project.dictionary.firebase.RealtimeDatabaseRepositoryImpl
@@ -22,18 +21,18 @@ import com.project.dictionary.ui.theme.color1
 import com.project.dictionary.ui.theme.color2
 import com.project.dictionary.ui.theme.color3
 import com.project.dictionary.ui.theme.color4
+import com.project.dictionary.utils.Constants.CHANNEL_ID
+import com.project.dictionary.utils.Constants.NOTIFICATION_WORD
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 object NotificationHandler {
-    private const val CHANNEL_ID = "transactions_reminder_channel"
     private val databaseRepositoryImpl = RealtimeDatabaseRepositoryImpl()
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -43,6 +42,7 @@ object NotificationHandler {
     private var word = Word()
 
     private var remoteViews: RemoteViews? = null
+    private var remoteViews2: RemoteViews? = null
     private var listRandomIndex = 0
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -52,7 +52,6 @@ object NotificationHandler {
             databaseRepositoryImpl.fetchWords().collectLatest {
                 when {
                     it.isSuccess -> {
-
                         scope.launch {
                             it.let { result ->
                                 result.getOrNull()?.let { list ->
@@ -67,12 +66,28 @@ object NotificationHandler {
 
                             remoteViews?.setTextViewText(R.id.notificationText, word.wordName)
 
-                            remoteViews?.setInt(R.id.root, "setBackgroundColor", when (listRandomIndex % 4) {
-                                0 -> color1.toArgb()
-                                1 -> color2.toArgb()
-                                2 -> color3.toArgb()
-                                else -> color4.toArgb()
-                            })
+                            remoteViews?.setInt(
+                                R.id.root, "setBackgroundColor", when (listRandomIndex % 4) {
+                                    0 -> color1.toArgb()
+                                    1 -> color2.toArgb()
+                                    2 -> color3.toArgb()
+                                    else -> color4.toArgb()
+                                }
+                            )
+
+                            remoteViews2 = RemoteViews(context.packageName, R.layout.custom_expanded_notification_layout)
+
+                            remoteViews2?.setTextViewText(R.id.notificationText, word.wordName)
+                            remoteViews2?.setTextViewText(R.id.notificationDescText, if (word.wordDescription.length > 99) word.wordDescription.replaceFirstChar { it.titlecase() }.substring(0, 100) + "..." else word.wordDescription.replaceFirstChar { it.titlecase() })
+
+                            remoteViews2?.setInt(
+                                R.id.root, "setBackgroundColor", when (listRandomIndex % 4) {
+                                    0 -> color1.toArgb()
+                                    1 -> color2.toArgb()
+                                    2 -> color3.toArgb()
+                                    else -> color4.toArgb()
+                                }
+                            )
 
                             //No back-stack when launched
                             val intent = Intent(context, MainActivity::class.java).apply {
@@ -92,6 +107,8 @@ object NotificationHandler {
                                 .setAutoCancel(true) //Remove notification when tapped
                                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC) //Show on lock screen
                                 .setContentIntent(pendingIntent)
+                                .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+                                .setCustomBigContentView(remoteViews2)
                                 .setContent(remoteViews) //For launching the MainActivity
 
                             with(NotificationManagerCompat.from(context)) {

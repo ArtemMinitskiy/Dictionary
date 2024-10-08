@@ -36,7 +36,7 @@ import java.time.LocalDateTime
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private var tempIntentWord: Word? = Word()
+    private var tempIntentWord: Word? = null
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -64,6 +64,7 @@ class MainActivity : ComponentActivity() {
             DictionaryTheme {
 
                 LaunchedEffect(word.value) {
+//                    Log.i("mLogFirebase", "word.value ${word.value}")
                     tempIntentWord?.let {
                         word.value = it
                     }

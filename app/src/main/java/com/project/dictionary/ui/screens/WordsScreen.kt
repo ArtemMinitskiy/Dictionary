@@ -32,6 +32,7 @@ import com.project.dictionary.ui.theme.color2
 import com.project.dictionary.ui.theme.color3
 import com.project.dictionary.ui.theme.color4
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -92,7 +93,7 @@ fun WordsScreen(
                         coroutine.launch {
                             listOfWords.value = it.getOrNull() as ArrayList<Word>
                             listOfWords.value.sortBy { it.wordName }
-//                            delay(1000)
+                            delay(1000)
                         }.invokeOnCompletion {
                             isLoading.value = true
 //                            Log.i("mLogFirebase", "Success")

@@ -5,7 +5,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import com.project.dictionary.utils.Constants.THREE_HOURS
+import com.project.dictionary.utils.Constants.FOUR_HOURS
 import java.util.Calendar
 
 class AlarmSchedulerImpl(
@@ -14,7 +14,7 @@ class AlarmSchedulerImpl(
 
     @SuppressLint("ScheduleExactAlarm")
     override fun schedule(alarmItem: AlarmItem) {
-//        Log.i("mLogFirebase", "schedule")
+//        Log.i("mLogFirebase", "Schedule")
 
         val alarmManager = context.getSystemService(AlarmManager::class.java)
 
@@ -27,15 +27,18 @@ class AlarmSchedulerImpl(
 
         val calendarFiring = Calendar.getInstance()
 
-        calendarFiring.set(Calendar.HOUR_OF_DAY, currentHourIn24Format)
-        calendarFiring.set(Calendar.MINUTE, currentMinute + 5)
+        calendarFiring.set(Calendar.HOUR_OF_DAY, currentHourIn24Format + FOUR_HOURS.toInt())
+        calendarFiring.set(Calendar.MINUTE, currentMinute)
+        //Test
+//        calendarFiring.set(Calendar.HOUR_OF_DAY, currentHourIn24Format)
+//        calendarFiring.set(Calendar.MINUTE, currentMinute + TEST_TIME)
         calendarFiring.set(Calendar.SECOND, 0)
         val intendedNotificationTime = calendarFiring.timeInMillis
 
         alarmManager.setRepeating(
             AlarmManager.RTC_WAKEUP,
             intendedNotificationTime,
-            THREE_HOURS,
+            FOUR_HOURS,
             PendingIntent.getBroadcast(
                 context,
                 1,
@@ -46,13 +49,6 @@ class AlarmSchedulerImpl(
     }
 
     override fun cancel(alarmItem: AlarmItem) {
-//        alarmManager.cancel(
-//            PendingIntent.getBroadcast(
-//                context,
-//                alarmItem.hashCode(),
-//                Intent(context, AlarmReceiver::class.java),
-//                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-//            )
-//        )
+
     }
 }

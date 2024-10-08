@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/purple_500"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/notificationText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:gravity="start"
+        android:letterSpacing="0.04"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        android:text="@string/app_name"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/notificationDescText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:gravity="start"
+        android:letterSpacing="0.04"
+        android:padding="16dp"
+        android:text="@string/app_name"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
+</LinearLayout>
