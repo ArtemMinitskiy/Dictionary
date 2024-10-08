@@ -5,15 +5,16 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import com.project.dictionary.utils.Constants.FOUR_HOURS
+import com.project.dictionary.utils.Constants.TEST_TIME
 import java.util.Calendar
 
 class AlarmSchedulerImpl(
     private val context: Context
 ) : AlarmScheduler {
-
     @SuppressLint("ScheduleExactAlarm")
-    override fun schedule(alarmItem: AlarmItem) {
+    override fun schedule() {
 //        Log.i("mLogFirebase", "Schedule")
 
         val alarmManager = context.getSystemService(AlarmManager::class.java)
@@ -21,9 +22,7 @@ class AlarmSchedulerImpl(
         val rightNow: Calendar = Calendar.getInstance()
         val currentHourIn24Format = rightNow.get(Calendar.HOUR_OF_DAY)
         val currentMinute = rightNow.get(Calendar.MINUTE)
-        val intent = Intent(context, AlarmReceiver::class.java).apply {
-            putExtra("EXTRA_MESSAGE", alarmItem.message)
-        }
+        val intent = Intent(context, AlarmReceiver::class.java)
 
         val calendarFiring = Calendar.getInstance()
 
@@ -46,9 +45,5 @@ class AlarmSchedulerImpl(
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
         )
-    }
-
-    override fun cancel(alarmItem: AlarmItem) {
-
     }
 }

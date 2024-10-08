@@ -65,28 +65,11 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     ksp(libs.hilt.android.compiler)
 
-    //Room
-    implementation(libs.room.android)
-    annotationProcessor(libs.room.android)
-    // To use Kotlin Symbol Processing (KSP)
-    ksp(libs.room.android.compiler)
-    // optional - Kotlin Extensions and Coroutines support for Room
-    implementation(libs.room.ktx.android)
-
-    //Retrofit
-    implementation(libs.retrofit.android)
-    implementation(libs.retrofit.gson.android)
-    implementation(libs.retrofit.scalars.android)
-    implementation(libs.okhttp3.logging.interceptor.android)
-
     //Coil
     implementation(libs.coil.compose.android)
 
     //Lottie
     implementation(libs.lottie.compose)
-
-    //Glide
-    implementation(libs.landscapist.glide)
 
     //Firebase
     implementation(platform(libs.firebase.bom))

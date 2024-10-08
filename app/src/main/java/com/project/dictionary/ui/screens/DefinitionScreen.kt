@@ -1,5 +1,6 @@
 package com.project.dictionary.ui.screens
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,7 +40,7 @@ fun DefinitionScreen(word: MutableState<Word>, onBack: () -> Unit) {
             .fillMaxSize()
             .padding(top = 60.dp, start = 16.dp, end = 8.dp)
     ) {
-        if (!word.value.wordImage.isNullOrEmpty()) {
+        if (!word.value.wordImage.isNullOrEmpty() && word.value.wordImage != "null") {
             Spacer(modifier = Modifier.height(16.dp))
             SubcomposeAsyncImage(
                 modifier = Modifier
