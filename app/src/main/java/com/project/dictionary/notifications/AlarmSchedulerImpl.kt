@@ -6,7 +6,9 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.project.dictionary.utils.Constants.FIFTEEN_MINUTES
 import com.project.dictionary.utils.Constants.FOUR_HOURS
+import com.project.dictionary.utils.Constants.FOUR_HOURS_MILLIS
 import com.project.dictionary.utils.Constants.TEST_TIME
 import java.util.Calendar
 
@@ -26,7 +28,7 @@ class AlarmSchedulerImpl(
 
         val calendarFiring = Calendar.getInstance()
 
-        calendarFiring.set(Calendar.HOUR_OF_DAY, currentHourIn24Format + FOUR_HOURS.toInt())
+        calendarFiring.set(Calendar.HOUR_OF_DAY, currentHourIn24Format + FOUR_HOURS)
         calendarFiring.set(Calendar.MINUTE, currentMinute)
         //Test
 //        calendarFiring.set(Calendar.HOUR_OF_DAY, currentHourIn24Format)
@@ -37,7 +39,8 @@ class AlarmSchedulerImpl(
         alarmManager.setRepeating(
             AlarmManager.RTC_WAKEUP,
             intendedNotificationTime,
-            FOUR_HOURS,
+//            60000,
+            FOUR_HOURS_MILLIS,
             PendingIntent.getBroadcast(
                 context,
                 1,

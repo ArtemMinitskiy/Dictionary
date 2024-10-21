@@ -78,7 +78,12 @@ object NotificationHandler {
                             remoteViews2 = RemoteViews(context.packageName, R.layout.custom_expanded_notification_layout)
 
                             remoteViews2?.setTextViewText(R.id.notificationText, word.wordName)
-                            remoteViews2?.setTextViewText(R.id.notificationDescText, if (word.wordDescription.length > 99) word.wordDescription.replaceFirstChar { it.titlecase() }.substring(0, 100) + "..." else word.wordDescription.replaceFirstChar { it.titlecase() })
+                            remoteViews2?.setTextViewText(R.id.notificationDescText,
+//                                if (word.wordDescription.length > 149)
+//                                    word.wordDescription.replaceFirstChar { it.titlecase() }.substring(0, 150) + "..."
+//                                else
+                                    word.wordDescription.replaceFirstChar { it.titlecase() }
+                            )
 
                             remoteViews2?.setInt(
                                 R.id.root, "setBackgroundColor", when (listRandomIndex % 4) {
