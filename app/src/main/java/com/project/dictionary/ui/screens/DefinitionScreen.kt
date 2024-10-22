@@ -1,6 +1,6 @@
 package com.project.dictionary.ui.screens
 
-import android.util.Log
+import android.speech.tts.TextToSpeech
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,11 +28,14 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.project.dictionary.R
 import com.project.dictionary.model.Word
+import com.project.dictionary.rememberTextToSpeech
 import com.project.dictionary.ui.theme.White
+import com.project.dictionary.utils.noRippleClickable
 
 @Composable
 fun DefinitionScreen(word: MutableState<Word>, onBack: () -> Unit) {
     val composition = rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.lf20_v90rvaig))
+    val tts = rememberTextToSpeech()
 
     Column(
         modifier = Modifier
@@ -70,6 +72,11 @@ fun DefinitionScreen(word: MutableState<Word>, onBack: () -> Unit) {
         }
 
         Text(
+            modifier = Modifier.noRippleClickable {
+                tts.value?.speak(
+                    word.value.wordName + word.value.wordDescription, TextToSpeech.QUEUE_FLUSH, null, ""
+                )
+            },
             text = word.value.wordName + " - " + word.value.wordDescription.replaceFirstChar { it.titlecase() },
             style = TextStyle(fontSize = 16.sp),
             color = White

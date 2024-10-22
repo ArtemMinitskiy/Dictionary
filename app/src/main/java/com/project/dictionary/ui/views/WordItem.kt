@@ -1,7 +1,6 @@
 package com.project.dictionary.ui.views
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,6 +15,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.project.dictionary.ui.theme.White
+import com.project.dictionary.utils.noRippleClickable
 
 @Composable
 fun WordItem(word: String, color: Color, onClick: () -> Unit) {
@@ -24,7 +24,7 @@ fun WordItem(word: String, color: Color, onClick: () -> Unit) {
         .height(60.dp)
         .padding(8.dp)
         .background(color, RoundedCornerShape(4.dp))
-        .clickable {
+        .noRippleClickable {
             onClick()
         })
     {
