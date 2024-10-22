@@ -10,6 +10,7 @@ import com.project.dictionary.utils.Constants.FIFTEEN_MINUTES
 import com.project.dictionary.utils.Constants.FOUR_HOURS
 import com.project.dictionary.utils.Constants.FOUR_HOURS_MILLIS
 import com.project.dictionary.utils.Constants.TEST_TIME
+import com.project.dictionary.utils.Constants.THREE_HOURS
 import java.util.Calendar
 
 class AlarmSchedulerImpl(
@@ -28,7 +29,7 @@ class AlarmSchedulerImpl(
 
         val calendarFiring = Calendar.getInstance()
 
-        calendarFiring.set(Calendar.HOUR_OF_DAY, currentHourIn24Format + FOUR_HOURS)
+        calendarFiring.set(Calendar.HOUR_OF_DAY, currentHourIn24Format + THREE_HOURS)
         calendarFiring.set(Calendar.MINUTE, currentMinute)
         //Test
 //        calendarFiring.set(Calendar.HOUR_OF_DAY, currentHourIn24Format)

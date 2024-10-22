@@ -9,6 +9,7 @@ object Constants {
     const val NOTIFICATION_WORD = "NOTIFICATION_WORD"
     const val FOUR_HOURS_MILLIS = 14400000L
     const val FOUR_HOURS = 4
+    const val THREE_HOURS = 3
     const val FIFTEEN_MINUTES = 900000
     const val CHANNEL_ID = "CHANNEL_ID"
     const val TEST_TIME = 2

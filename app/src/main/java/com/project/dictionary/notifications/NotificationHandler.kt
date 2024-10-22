@@ -42,7 +42,7 @@ object NotificationHandler {
     private var word = Word()
 
     private var remoteViews: RemoteViews? = null
-    private var remoteViews2: RemoteViews? = null
+    private var expandedRemoteViews: RemoteViews? = null
     private var listRandomIndex = 0
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -75,17 +75,17 @@ object NotificationHandler {
                                 }
                             )
 
-                            remoteViews2 = RemoteViews(context.packageName, R.layout.custom_expanded_notification_layout)
+                            expandedRemoteViews = RemoteViews(context.packageName, R.layout.custom_expanded_notification_layout)
 
-                            remoteViews2?.setTextViewText(R.id.notificationText, word.wordName)
-                            remoteViews2?.setTextViewText(R.id.notificationDescText,
+                            expandedRemoteViews?.setTextViewText(R.id.notificationText, word.wordName)
+                            expandedRemoteViews?.setTextViewText(R.id.notificationDescText,
 //                                if (word.wordDescription.length > 149)
 //                                    word.wordDescription.replaceFirstChar { it.titlecase() }.substring(0, 150) + "..."
 //                                else
                                     word.wordDescription.replaceFirstChar { it.titlecase() }
                             )
 
-                            remoteViews2?.setInt(
+                            expandedRemoteViews?.setInt(
                                 R.id.root, "setBackgroundColor", when (listRandomIndex % 4) {
                                     0 -> color1.toArgb()
                                     1 -> color2.toArgb()
@@ -107,13 +107,13 @@ object NotificationHandler {
                             createNotificationChannel(context) //This won't create a new channel everytime, safe to call
 
                             val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-                                .setSmallIcon(R.mipmap.ic_launcher_round)
+                                .setSmallIcon(R.mipmap.ic_launcher)
                                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                                 .setAutoCancel(true) //Remove notification when tapped
                                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC) //Show on lock screen
                                 .setContentIntent(pendingIntent)
                                 .setStyle(NotificationCompat.DecoratedCustomViewStyle())
-                                .setCustomBigContentView(remoteViews2)
+                                .setCustomBigContentView(expandedRemoteViews)
                                 .setContent(remoteViews) //For launching the MainActivity
 
                             with(NotificationManagerCompat.from(context)) {
