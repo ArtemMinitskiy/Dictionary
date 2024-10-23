@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Dictionary</string>
+    <string name="blue_theme">Blue Theme</string>
+    <string name="red_theme">Red Theme</string>
+    <string name="green_theme">Green Theme</string>
+    <string name="yellow_theme">Yellow Theme</string>
+    <string name="orange_theme">Orange Theme</string>
 </resources>

@@ -17,10 +17,10 @@ import com.project.dictionary.MainActivity
 import com.project.dictionary.R
 import com.project.dictionary.firebase.RealtimeDatabaseRepositoryImpl
 import com.project.dictionary.model.Word
-import com.project.dictionary.ui.theme.color1
-import com.project.dictionary.ui.theme.color2
-import com.project.dictionary.ui.theme.color3
-import com.project.dictionary.ui.theme.color4
+import com.project.dictionary.ui.theme.blueColor1
+import com.project.dictionary.ui.theme.blueColor2
+import com.project.dictionary.ui.theme.blueColor3
+import com.project.dictionary.ui.theme.blueColor4
 import com.project.dictionary.utils.Constants.CHANNEL_ID
 import com.project.dictionary.utils.Constants.NOTIFICATION_WORD
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -68,10 +68,10 @@ object NotificationHandler {
 
                             remoteViews?.setInt(
                                 R.id.root, "setBackgroundColor", when (listRandomIndex % 4) {
-                                    0 -> color1.toArgb()
-                                    1 -> color2.toArgb()
-                                    2 -> color3.toArgb()
-                                    else -> color4.toArgb()
+                                    0 -> blueColor1.toArgb()
+                                    1 -> blueColor2.toArgb()
+                                    2 -> blueColor3.toArgb()
+                                    else -> blueColor4.toArgb()
                                 }
                             )
 
@@ -87,10 +87,10 @@ object NotificationHandler {
 
                             expandedRemoteViews?.setInt(
                                 R.id.root, "setBackgroundColor", when (listRandomIndex % 4) {
-                                    0 -> color1.toArgb()
-                                    1 -> color2.toArgb()
-                                    2 -> color3.toArgb()
-                                    else -> color4.toArgb()
+                                    0 -> blueColor1.toArgb()
+                                    1 -> blueColor2.toArgb()
+                                    2 -> blueColor3.toArgb()
+                                    else -> blueColor4.toArgb()
                                 }
                             )
 

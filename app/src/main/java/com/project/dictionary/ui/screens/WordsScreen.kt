@@ -28,10 +28,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.project.dictionary.MainViewModel
 import com.project.dictionary.R
 import com.project.dictionary.model.Word
-import com.project.dictionary.ui.theme.color1
-import com.project.dictionary.ui.theme.color2
-import com.project.dictionary.ui.theme.color3
-import com.project.dictionary.ui.theme.color4
+import com.project.dictionary.ui.theme.settingsColors
 import com.project.dictionary.ui.views.WordItem
 import com.project.dictionary.utils.LoadingState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -43,6 +40,7 @@ import kotlinx.coroutines.launch
 fun WordsScreen(
     viewModel: MainViewModel,
     scrollIndex: MutableState<Int>,
+    wordItemColor: MutableState<String>,
     onClick: (Word, Int) -> Unit
 ) {
     val listOfWords = remember { mutableStateOf<ArrayList<Word>>(arrayListOf()) }
@@ -80,16 +78,15 @@ fun WordsScreen(
         is LoadingState.Success -> {
             LazyColumn(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 34.dp),
+                    .fillMaxSize(),
                 state = scrollState
             ) {
                 itemsIndexed(items = listOfWords.value, itemContent = { index, item ->
                     when (index % 4) {
-                        0 -> WordItem(item.wordName, color1) { onClick(item, index) }
-                        1 -> WordItem(item.wordName, color2) { onClick(item, index) }
-                        2 -> WordItem(item.wordName, color3) { onClick(item, index) }
-                        else -> WordItem(item.wordName, color4) { onClick(item, index) }
+                        0 -> settingsColors[wordItemColor.value]?.let { WordItem(item.wordName, it[0]) { onClick(item, index) } }
+                        1 -> settingsColors[wordItemColor.value]?.let { WordItem(item.wordName, it[1]) { onClick(item, index) } }
+                        2 -> settingsColors[wordItemColor.value]?.let { WordItem(item.wordName, it[2]) { onClick(item, index) } }
+                        else -> settingsColors[wordItemColor.value]?.let { WordItem(item.wordName, it[3]) { onClick(item, index) } }
                     }
                 })
             }

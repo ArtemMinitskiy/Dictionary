@@ -5,12 +5,13 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,8 +27,10 @@ import com.project.dictionary.notifications.AlarmScheduler
 import com.project.dictionary.notifications.AlarmSchedulerImpl
 import com.project.dictionary.notifications.NavigationItem
 import com.project.dictionary.ui.screens.DefinitionScreen
+import com.project.dictionary.ui.screens.SettingsScreen
 import com.project.dictionary.ui.screens.WordsScreen
 import com.project.dictionary.ui.theme.DictionaryTheme
+import com.project.dictionary.ui.views.Toolbar
 import com.project.dictionary.utils.Constants.NOTIFICATION_WORD
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -51,14 +54,21 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        enableEdgeToEdge()
+//        enableEdgeToEdge()
         setContent {
             val viewModel: MainViewModel = hiltViewModel()
             val word = remember { mutableStateOf(Word()) }
             val scrollIndex = remember { mutableIntStateOf(0) }
             val navController = rememberNavController()
+            val wordItemColor = remember { mutableStateOf("") }
 
             DictionaryTheme {
+                viewModel.colorSettingsFlow.collectAsState().let { color ->
+                    if (!color.value.isNullOrEmpty()) {
+                        wordItemColor.value = color.value
+                        Log.e("mLogSettings", "colorSettingsFlow ${color.value}")
+                    }
+                }
 
                 LaunchedEffect(word.value) {
 //                    Log.i("mLogFirebase", "word.value ${word.value}")
@@ -75,28 +85,41 @@ class MainActivity : ComponentActivity() {
 
                 Image(modifier = Modifier.fillMaxSize(), contentScale = ContentScale.FillBounds, painter = painterResource(id = R.drawable.background), contentDescription = "")
 
-                NavHost(navController = navController,
-                    startDestination = if (intent.hasExtra(NOTIFICATION_WORD)) NavigationItem.Definition.route else NavigationItem.List.route,
-                    exitTransition = {
-                        ExitTransition.None
-                    },
-                    popExitTransition = {
-                        ExitTransition.None
-                    }
-                ) {
-                    composable(NavigationItem.List.route) {
-                        WordsScreen(viewModel, scrollIndex) { item, index ->
-                            word.value = item
-                            scrollIndex.intValue = index
-                            navController.navigate(NavigationItem.Definition.route)
+                Column(modifier = Modifier.fillMaxSize()) {
+                    Toolbar(onSettings = {
+                        navController.navigate(NavigationItem.Settings.route)
+                    })
+//                    Spacer(modifier = Modifier.height(16.dp))
+                    NavHost(navController = navController,
+                        startDestination = if (intent.hasExtra(NOTIFICATION_WORD)) NavigationItem.Definition.route else NavigationItem.List.route,
+//                        startDestination = NavigationItem.Settings.route,
+                        exitTransition = {
+                            ExitTransition.None
+                        },
+                        popExitTransition = {
+                            ExitTransition.None
                         }
-                    }
-                    composable(NavigationItem.Definition.route) {
-                        DefinitionScreen(word) {
-                            if (intent.hasExtra(NOTIFICATION_WORD)) navController.navigate(NavigationItem.List.route) else navController.popBackStack()
-                            intent.removeExtra(NOTIFICATION_WORD)
-                            word.value = Word()
-                            tempIntentWord = null
+                    ) {
+                        composable(NavigationItem.List.route) {
+                            WordsScreen(viewModel, scrollIndex, wordItemColor) { item, index ->
+                                word.value = item
+                                scrollIndex.intValue = index
+                                navController.navigate(NavigationItem.Definition.route)
+                            }
+                        }
+                        composable(NavigationItem.Definition.route) {
+                            DefinitionScreen(word) {
+                                if (intent.hasExtra(NOTIFICATION_WORD)) navController.navigate(NavigationItem.List.route) else navController.popBackStack()
+                                intent.removeExtra(NOTIFICATION_WORD)
+                                word.value = Word()
+                                tempIntentWord = null
+                            }
+                        }
+                        composable(NavigationItem.Settings.route) {
+                            SettingsScreen(wordItemColor, colorPick = {
+                                viewModel.updateColorSettings(it)
+                                Log.i("mLogSettings", "$it")
+                            })
                         }
                     }
                 }

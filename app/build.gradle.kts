@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.devtools.ksp)
     alias(libs.plugins.dagger.hilt.android)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.serialization)
 }
 
 android {
@@ -82,6 +83,10 @@ dependencies {
 
     //WorkManager
     implementation(libs.androidx.work.runtime.ktx)
+
+    //DataStore
+    implementation(libs.androidx.datastore)
+    implementation(libs.kotlinx.serialization.json)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

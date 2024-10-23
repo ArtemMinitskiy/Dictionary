@@ -13,4 +13,9 @@ object Constants {
     const val FIFTEEN_MINUTES = 900000
     const val CHANNEL_ID = "CHANNEL_ID"
     const val TEST_TIME = 2
+    const val BLUE = "BLUE"
+    const val RED = "RED"
+    const val GREEN = "GREEN"
+    const val YELLOW = "YELLOW"
+    const val ORANGE = "ORANGE"
 }
