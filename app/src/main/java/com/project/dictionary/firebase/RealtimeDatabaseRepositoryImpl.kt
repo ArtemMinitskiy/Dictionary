@@ -48,6 +48,7 @@ class RealtimeDatabaseRepositoryImpl @Inject constructor(
                         }
                     }
                 }
+                listOfWords.sortBy { word -> word.wordName }
                 this@callbackFlow.trySendBlocking(Result.success(listOfWords))
             }
         }

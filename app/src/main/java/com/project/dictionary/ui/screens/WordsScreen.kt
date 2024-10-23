@@ -33,7 +33,6 @@ import com.project.dictionary.ui.views.WordItem
 import com.project.dictionary.utils.LoadingState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
@@ -43,18 +42,13 @@ fun WordsScreen(
     wordItemColor: MutableState<String>,
     onClick: (Word, Int) -> Unit
 ) {
-    val listOfWords = remember { mutableStateOf<ArrayList<Word>>(arrayListOf()) }
+    val listOfWords = remember { mutableStateOf<List<Word>>(listOf()) }
     val composition = rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.lf20_v90rvaig))
-    val coroutine = rememberCoroutineScope()
     val scrollState = rememberLazyListState()
     val context = LocalContext.current
     val loadingState = viewModel.loadingState.collectAsState()
 
     when (loadingState.value) {
-        is LoadingState.Idle -> {
-
-        }
-
         is LoadingState.Loading -> {
             Box(
                 modifier = Modifier
@@ -98,21 +92,8 @@ fun WordsScreen(
     }
 
     LaunchedEffect(viewModel) {
-        viewModel.getListOfWords().collectLatest {
-            when {
-                it.isSuccess -> {
-                    coroutine.launch {
-                        listOfWords.value = it.getOrNull() as ArrayList<Word>
-                        listOfWords.value.sortBy { word -> word.wordName }
-                    }.invokeOnCompletion {
-                        viewModel.success("Success")
-                    }
-                }
-
-                it.isFailure -> {
-                    viewModel.error("Failure ${it.exceptionOrNull()?.printStackTrace()}")
-                }
-            }
+        viewModel.listOfWords.collectLatest {
+            listOfWords.value = it
         }
     }
 

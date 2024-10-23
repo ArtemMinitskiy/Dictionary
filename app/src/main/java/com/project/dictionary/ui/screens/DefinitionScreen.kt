@@ -40,10 +40,10 @@ fun DefinitionScreen(word: MutableState<Word>, onBack: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 60.dp, start = 16.dp, end = 8.dp)
+            .padding(start = 16.dp, end = 8.dp)
     ) {
+        Spacer(modifier = Modifier.height(16.dp))
         if (!word.value.wordImage.isNullOrEmpty() && word.value.wordImage != "null") {
-            Spacer(modifier = Modifier.height(16.dp))
             SubcomposeAsyncImage(
                 modifier = Modifier
                     .fillMaxWidth()

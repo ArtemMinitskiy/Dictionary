@@ -11,6 +11,7 @@ import com.project.dictionary.model.Word
 import com.project.dictionary.notifications.ReminderNotificationWorker
 import com.project.dictionary.utils.LoadingState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
@@ -28,6 +29,27 @@ class MainViewModel @Inject constructor(
     private val settingsDataStore: SettingsDataStore,
 ) : ViewModel() {
 
+    private val _listOfWords = MutableStateFlow<List<Word>>(listOf())
+    var listOfWords: StateFlow<List<Word>> = _listOfWords
+
+    init {
+        addObserver()
+        viewModelScope.launch(Dispatchers.IO) {
+            realtimeDatabaseRepository.fetchWords().collectLatest {
+                when {
+                    it.isSuccess -> {
+                        _listOfWords.value = it.getOrNull() as ArrayList<Word>
+                        success("Success")
+                    }
+
+                    it.isFailure -> {
+                        error("Failure ${it.exceptionOrNull()?.printStackTrace()}")
+                    }
+                }
+            }
+        }
+    }
+
     fun getListOfWords(): Flow<Result<List<Word>>> {
         loading()
         return realtimeDatabaseRepository.fetchWords()
@@ -39,24 +61,20 @@ class MainViewModel @Inject constructor(
         ReminderNotificationWorker.schedule(app)
     }
 
-    private val _loadingState = MutableStateFlow<LoadingState>(LoadingState.Idle)
+    private val _loadingState = MutableStateFlow<LoadingState>(LoadingState.Loading)
     var loadingState: StateFlow<LoadingState> = _loadingState
 
-    fun reset() {
-        _loadingState.value = LoadingState.Idle
-    }
-
-    fun loading() {
+    private fun loading() {
         Log.i("mLogLoading", "Loading")
         _loadingState.value = LoadingState.Loading
     }
 
-    fun success(str: String) {
+    private fun success(str: String) {
         Log.i("mLogLoading", "Success $str")
         _loadingState.value = LoadingState.Success(str)
     }
 
-    fun error(str: String) {
+    private fun error(str: String) {
         Log.e("mLogLoading", "Error $str")
         _loadingState.value = LoadingState.Error(str)
     }
@@ -65,11 +83,6 @@ class MainViewModel @Inject constructor(
     val collector = FlowCollector<SettingsData> {
         colorSettingsFlow.emit(it.color)
 
-    }
-
-    init {
-        Log.e("mLogSettings", "Init")
-        addObserver()
     }
 
     private fun addObserver() {
