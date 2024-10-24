@@ -17,10 +17,7 @@ import com.project.dictionary.MainActivity
 import com.project.dictionary.R
 import com.project.dictionary.firebase.RealtimeDatabaseRepositoryImpl
 import com.project.dictionary.model.Word
-import com.project.dictionary.ui.theme.blueColor1
-import com.project.dictionary.ui.theme.blueColor2
-import com.project.dictionary.ui.theme.blueColor3
-import com.project.dictionary.ui.theme.blueColor4
+import com.project.dictionary.ui.theme.settingsColors
 import com.project.dictionary.utils.Constants.CHANNEL_ID
 import com.project.dictionary.utils.Constants.NOTIFICATION_WORD
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -46,7 +43,7 @@ object NotificationHandler {
     private var listRandomIndex = 0
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun createReminderNotification(context: Context) {
+    fun createReminderNotification(context: Context, color: String?) {
         Log.i("mLogFirebase", "createReminderNotification")
         scope.launch {
             databaseRepositoryImpl.fetchWords().collectLatest {
@@ -57,7 +54,7 @@ object NotificationHandler {
                                 result.getOrNull()?.let { list ->
                                     listRandomIndex = Random.nextInt(0, list.size - 1)
                                     word = list[listRandomIndex]
-                                    Log.e("mLogFirebase", "WORD: $word")
+//                                    Log.e("mLogFirebase", "WORD: $word")
                                 }
                             }
                         }.invokeOnCompletion {
@@ -66,14 +63,16 @@ object NotificationHandler {
 
                             remoteViews?.setTextViewText(R.id.notificationText, word.wordName)
 
-                            remoteViews?.setInt(
-                                R.id.root, "setBackgroundColor", when (listRandomIndex % 4) {
-                                    0 -> blueColor1.toArgb()
-                                    1 -> blueColor2.toArgb()
-                                    2 -> blueColor3.toArgb()
-                                    else -> blueColor4.toArgb()
-                                }
-                            )
+                            settingsColors[color]?.let { color1 ->
+                                remoteViews?.setInt(
+                                    R.id.root, "setBackgroundColor", when (listRandomIndex % 4) {
+                                        0 -> color1[0].toArgb()
+                                        1 -> color1[1].toArgb()
+                                        2 -> color1[2].toArgb()
+                                        else -> color1[3].toArgb()
+                                    }
+                                )
+                            }
 
                             expandedRemoteViews = RemoteViews(context.packageName, R.layout.custom_expanded_notification_layout)
 
@@ -82,17 +81,19 @@ object NotificationHandler {
 //                                if (word.wordDescription.length > 149)
 //                                    word.wordDescription.replaceFirstChar { it.titlecase() }.substring(0, 150) + "..."
 //                                else
-                                    word.wordDescription.replaceFirstChar { it.titlecase() }
+                                word.wordDescription.replaceFirstChar { it.titlecase() }
                             )
 
-                            expandedRemoteViews?.setInt(
-                                R.id.root, "setBackgroundColor", when (listRandomIndex % 4) {
-                                    0 -> blueColor1.toArgb()
-                                    1 -> blueColor2.toArgb()
-                                    2 -> blueColor3.toArgb()
-                                    else -> blueColor4.toArgb()
-                                }
-                            )
+                            settingsColors[color]?.let { color1 ->
+                                expandedRemoteViews?.setInt(
+                                    R.id.root, "setBackgroundColor", when (listRandomIndex % 4) {
+                                        0 -> color1[0].toArgb()
+                                        1 -> color1[1].toArgb()
+                                        2 -> color1[2].toArgb()
+                                        else -> color1[3].toArgb()
+                                    }
+                                )
+                            }
 
                             //No back-stack when launched
                             val intent = Intent(context, MainActivity::class.java).apply {

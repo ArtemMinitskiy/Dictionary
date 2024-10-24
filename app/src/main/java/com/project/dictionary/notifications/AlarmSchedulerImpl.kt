@@ -6,9 +6,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.project.dictionary.utils.Constants.FIFTEEN_MINUTES
-import com.project.dictionary.utils.Constants.FOUR_HOURS
 import com.project.dictionary.utils.Constants.FOUR_HOURS_MILLIS
+import com.project.dictionary.utils.Constants.NOTIFICATION_COLOR
 import com.project.dictionary.utils.Constants.TEST_TIME
 import com.project.dictionary.utils.Constants.THREE_HOURS
 import java.util.Calendar
@@ -17,8 +16,8 @@ class AlarmSchedulerImpl(
     private val context: Context
 ) : AlarmScheduler {
     @SuppressLint("ScheduleExactAlarm")
-    override fun schedule() {
-//        Log.i("mLogFirebase", "Schedule")
+    override fun schedule(color: String) {
+//        Log.e("mLogFirebase", "Schedule $color")
 
         val alarmManager = context.getSystemService(AlarmManager::class.java)
 
@@ -26,6 +25,7 @@ class AlarmSchedulerImpl(
         val currentHourIn24Format = rightNow.get(Calendar.HOUR_OF_DAY)
         val currentMinute = rightNow.get(Calendar.MINUTE)
         val intent = Intent(context, AlarmReceiver::class.java)
+        intent.putExtra(NOTIFICATION_COLOR, color)
 
         val calendarFiring = Calendar.getInstance()
 

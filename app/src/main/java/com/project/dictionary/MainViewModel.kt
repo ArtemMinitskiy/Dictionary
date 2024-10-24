@@ -79,18 +79,15 @@ class MainViewModel @Inject constructor(
         _loadingState.value = LoadingState.Error(str)
     }
 
-    var colorSettingsFlow = MutableStateFlow<String>("")
+    var colorSettingsFlow = MutableStateFlow("")
     val collector = FlowCollector<SettingsData> {
         colorSettingsFlow.emit(it.color)
-
     }
 
     private fun addObserver() {
         viewModelScope.launch {
-            Log.e("mLogSettings", "ADD OBSERVER")
             settingsDataStore.getSettingsData()
                 .collectLatest {
-                    Log.i("mLogSettings", "addObserver $it")
                     collector.emit(it)
                 }
         }
@@ -98,10 +95,7 @@ class MainViewModel @Inject constructor(
 
     fun updateColorSettings(color: String) {
         viewModelScope.launch {
-            Log.i("mLogSettings", "$color")
             settingsDataStore.updateColorSettings(color)
-        }.invokeOnCompletion {
-            Log.i("mLogSettings", "Complete")
         }
     }
 }

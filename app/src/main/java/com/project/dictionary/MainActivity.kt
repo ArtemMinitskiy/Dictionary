@@ -23,7 +23,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.project.dictionary.model.Word
-import com.project.dictionary.notifications.AlarmScheduler
 import com.project.dictionary.notifications.AlarmSchedulerImpl
 import com.project.dictionary.notifications.NavigationItem
 import com.project.dictionary.ui.screens.DefinitionScreen
@@ -44,7 +43,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val alarmScheduler: AlarmScheduler = AlarmSchedulerImpl(this)
+        val alarmScheduler = AlarmSchedulerImpl(this@MainActivity)
 
         if (intent.hasExtra(NOTIFICATION_WORD)) {
             tempIntentWord = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -66,22 +65,22 @@ class MainActivity : ComponentActivity() {
                 viewModel.colorSettingsFlow.collectAsState().let { color ->
                     if (!color.value.isNullOrEmpty()) {
                         wordItemColor.value = color.value
-                        Log.e("mLogSettings", "colorSettingsFlow ${color.value}")
+                        Log.i("mLogFirebase", "color ${color.value}")
+                        alarmScheduler.schedule(wordItemColor.value)
                     }
                 }
 
                 LaunchedEffect(word.value) {
-//                    Log.i("mLogFirebase", "word.value ${word.value}")
                     tempIntentWord?.let {
                         word.value = it
                     }
                 }
-                LaunchedEffect(Unit) {
-                    alarmScheduler.schedule()
+//                LaunchedEffect(Unit) {
+//                    alarmScheduler?.schedule(wordItemColor.value)
 
                     //Not working on Xiaomi
 //                    viewModel.scheduleReminderNotification()
-                }
+//                }
 
                 Image(modifier = Modifier.fillMaxSize(), contentScale = ContentScale.FillBounds, painter = painterResource(id = R.drawable.background), contentDescription = "")
 
@@ -89,10 +88,8 @@ class MainActivity : ComponentActivity() {
                     Toolbar(onSettings = {
                         navController.navigate(NavigationItem.Settings.route)
                     })
-//                    Spacer(modifier = Modifier.height(16.dp))
                     NavHost(navController = navController,
                         startDestination = if (intent.hasExtra(NOTIFICATION_WORD)) NavigationItem.Definition.route else NavigationItem.List.route,
-//                        startDestination = NavigationItem.Settings.route,
                         exitTransition = {
                             ExitTransition.None
                         },
@@ -118,7 +115,6 @@ class MainActivity : ComponentActivity() {
                         composable(NavigationItem.Settings.route) {
                             SettingsScreen(wordItemColor, colorPick = {
                                 viewModel.updateColorSettings(it)
-                                Log.i("mLogSettings", "$it")
                             })
                         }
                     }

@@ -18,4 +18,5 @@ object Constants {
     const val GREEN = "GREEN"
     const val YELLOW = "YELLOW"
     const val ORANGE = "ORANGE"
+    const val NOTIFICATION_COLOR = "NOTIFICATION_COLOR"
 }

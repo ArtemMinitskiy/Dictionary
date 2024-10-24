@@ -26,7 +26,6 @@ class SettingsDataStoreImpl(
     }
 
     override suspend fun updateColorSettings(color: String) {
-        Log.e("mLogSettings", "updateColorSettings: $color")
         dataStore.updateData { md ->
             md.copy(
                 color = color
